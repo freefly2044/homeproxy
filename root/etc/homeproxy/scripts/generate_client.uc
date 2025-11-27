@@ -982,13 +982,14 @@ if (!isEmpty(main_node)) {
 
 /* Experimental start */
 if (routing_mode in ['bypass_mainland_china', 'custom']) {
-	config.experimental = {
-		cache_file: {
-			enabled: true,
-			path: RUN_DIR + '/cache.db',
-			store_rdrc: strToBool(cache_file_store_rdrc),
-			rdrc_timeout: strToTime(cache_file_rdrc_timeout),
-		}
+	if (!config.experimental)
+		config.experimental = {};
+
+	config.experimental.cache_file = {
+		enabled: true,
+		path: RUN_DIR + '/cache.db',
+		store_rdrc: strToBool(cache_file_store_rdrc),
+		rdrc_timeout: strToTime(cache_file_rdrc_timeout),
 	};
 }
 /* Experimental end */
