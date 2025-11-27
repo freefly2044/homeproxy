@@ -137,6 +137,14 @@ if (match(proxy_mode), /tun/) {
 }
 
 const log_level = uci.get(uciconfig, ucimain, 'log_level') || 'warn';
+
+const clash_api_enabled = uci.get(uciconfig, ucimain, 'clash_api_enabled') || '0';
+const clash_api_external_controller = uci.get(uciconfig, ucimain, 'clash_api_external_controller') || '0.0.0.0:9090';
+const clash_api_secret = uci.get(uciconfig, ucimain, 'clash_api_secret') || '';
+const clash_api_ui = uci.get(uciconfig, ucimain, 'clash_api_ui') || '/etc/homeproxy/ui';
+const clash_api_ui_url = uci.get(uciconfig, ucimain, 'clash_api_ui_url') || 'https://github.com/MetaCubeX/yacd/archive/gh-pages.zip';
+const clash_api_ui_detour = uci.get(uciconfig, ucimain, 'clash_api_ui_detour') || 'direct-out';
+const clash_api_default_mode = uci.get(uciconfig, ucimain, 'clash_api_default_mode') || 'rule';
 /* UCI config end */
 
 /* Config helper start */
@@ -405,6 +413,20 @@ config.log = {
 	output: RUN_DIR + '/sing-box-c.log',
 	timestamp: true
 };
+
+/* Clash API */
+if (clash_api_enabled === '1') {
+	config.experimental = {
+		clash_api: {
+			external_controller: clash_api_external_controller,
+			external_ui: clash_api_ui,
+			external_ui_download_url: clash_api_ui_url,
+			external_ui_download_detour: get_outbound(clash_api_ui_detour),
+			secret: clash_api_secret,
+			default_mode: clash_api_default_mode
+		}
+	};
+}
 
 /* NTP */
 if (!isEmpty(ntp_server))
