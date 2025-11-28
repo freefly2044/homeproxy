@@ -472,6 +472,7 @@ return view.extend({
 		so = ss.option(form.ListValue, 'node', _('Node'),
 			_('Outbound node'));
 		so.value('urltest', _('URLTest'));
+		so.value('selector', _('Selector'));
 		for (let i in proxy_nodes)
 			so.value(i, proxy_nodes[i]);
 		so.validate = L.bind(hp.validateUniqueValue, this, data[0], 'routing_node', 'node');
@@ -493,21 +494,21 @@ return view.extend({
 
 			return this.super('load', section_id);
 		}
-		so.depends({ 'node': 'urltest', '!reverse': true });
+		so.depends({ 'node': /^((?!urltest|selector$).)+$/ });
 		so.modalonly = true;
 
 		so = ss.option(form.ListValue, 'domain_strategy', _('Domain strategy'),
 			_('The domain strategy for resolving the domain name in the address.'));
 		for (let i in hp.dns_strategy)
 			so.value(i, hp.dns_strategy[i]);
-		so.depends({ 'node': 'urltest', '!reverse': true });
+		so.depends({ 'node': /^((?!urltest|selector$).)+$/ });
 		so.modalonly = true;
 
 		so = ss.option(widgets.DeviceSelect, 'bind_interface', _('Bind interface'),
 			_('The network interface to bind to.'));
 		so.multiple = false;
 		so.noaliases = true;
-		so.depends({ 'outbound': '', 'node': /^((?!urltest$).)+$/ });
+		so.depends({ 'outbound': '', 'node': /^((?!urltest|selector$).)+$/ });
 		so.modalonly = true;
 
 		so = ss.option(form.ListValue, 'outbound', _('Outbound'),
@@ -543,7 +544,7 @@ return view.extend({
 
 			return true;
 		}
-		so.depends({ 'node': 'urltest', '!reverse': true });
+		so.depends({ 'node': /^((?!urltest|selector$).)+$/ });
 		so.editable = true;
 
 		so = ss.option(hp.CBIStaticList, 'urltest_nodes', _('URLTest nodes'),
@@ -613,6 +614,50 @@ return view.extend({
 		so = ss.option(form.Flag, 'urltest_interrupt_exist_connections', _('Interrupt existing connections'),
 			_('Interrupt existing connections when the selected outbound has changed.'));
 		so.depends('node', 'urltest');
+		so.modalonly = true;
+
+		so = ss.option(form.MultiValue, 'selector_outbounds', _('Outbounds'),
+			_('List of nodes to select.'));
+		so.load = function (section_id) {
+			delete this.keylist;
+			delete this.vallist;
+
+			uci.sections(data[0], 'routing_node', (res) => {
+				if (res['.name'] !== section_id && res.node === 'urltest')
+					this.value(res['.name'], res.label);
+			});
+
+			return this.super('load', section_id);
+		}
+		so.depends('node', 'selector');
+		so.validate = function (section_id) {
+			let value = this.section.formvalue(section_id, 'selector_outbounds');
+			if (section_id && !value.length)
+				return _('Expecting: %s').format(_('non-empty value'));
+
+			return true;
+		}
+		so.modalonly = true;
+
+		so = ss.option(form.ListValue, 'selector_default', _('Default outbound'),
+			_('Default outbound when no selector is chosen.'));
+		so.load = function (section_id) {
+			delete this.keylist;
+			delete this.vallist;
+
+			uci.sections(data[0], 'routing_node', (res) => {
+				if (res['.name'] !== section_id && res.node === 'urltest')
+					this.value(res['.name'], res.label);
+			});
+
+			return this.super('load', section_id);
+		}
+		so.depends('node', 'selector');
+		so.modalonly = true;
+
+		so = ss.option(form.Flag, 'selector_interrupt_exist_connections', _('Interrupt existing connections'),
+			_('Interrupt existing connections when the selected outbound has changed.'));
+		so.depends('node', 'selector');
 		so.modalonly = true;
 		/* Routing nodes end */
 

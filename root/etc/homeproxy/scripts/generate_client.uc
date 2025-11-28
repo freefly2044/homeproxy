@@ -372,7 +372,7 @@ function get_outbound(cfg) {
 			const node = uci.get(uciconfig, cfg, 'node');
 			if (isEmpty(node))
 				die(sprintf("%s's node is missing, please check your configuration.", cfg));
-			else if (node === 'urltest')
+			else if (node === 'urltest' || node === 'selector')
 				return 'cfg-' + cfg + '-out';
 			else
 				return 'cfg-' + node + '-out';
@@ -771,6 +771,14 @@ if (!isEmpty(main_node)) {
 				interrupt_exist_connections: strToBool(cfg.urltest_interrupt_exist_connections)
 			});
 			urltest_nodes = [...urltest_nodes, ...filter(cfg.urltest_nodes, (l) => !~index(urltest_nodes, l))];
+		} else if (cfg.node === 'selector') {
+			push(config.outbounds, {
+				type: 'selector',
+				tag: 'cfg-' + cfg['.name'] + '-out',
+				outbounds: map(cfg.selector_outbounds, (k) => `cfg-${k}-out`),
+				default: 'cfg-' + cfg.selector_default + '-out',
+				interrupt_exist_connections: strToBool(cfg.selector_interrupt_exist_connections)
+			});
 		} else {
 			const outbound = uci.get_all(uciconfig, cfg.node) || {};
 			if (outbound.type === 'wireguard') {
