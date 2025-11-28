@@ -3119,3 +3119,79 @@ msgstr "有效端口值"
 #: htdocs/luci-static/resources/homeproxy.js:328
 msgid "valid uuid"
 msgstr "有效 uuid"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:303
+msgid "Enable Clash API"
+msgstr "启用 Clash API"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:304
+msgid "Enable Clash API for external controllers."
+msgstr "为外部控制器启用 Clash API。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:308
+msgid "External controller"
+msgstr "外部控制器"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:309
+msgid "The address and port for the Clash API (e.g. 0.0.0.0:9090)."
+msgstr "Clash API 的地址和端口（例如 0.0.0.0:9090）。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:313
+msgid "API secret"
+msgstr "API 密钥"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:314
+msgid "The secret for the Clash API."
+msgstr "Clash API 的密钥。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:318
+msgid "UI path"
+msgstr "UI 路径"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:319
+msgid "The path to the Clash UI."
+msgstr "Clash UI 的路径。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:323
+msgid "UI download URL"
+msgstr "UI 下载 URL"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:324
+msgid "The URL to download the Clash UI."
+msgstr "下载 Clash UI 的 URL。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:328
+msgid "UI download detour"
+msgstr "UI 下载分流"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:329
+msgid "The outbound detour for downloading the UI."
+msgstr "用于下载 UI 的出站分流。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:345
+msgid "Default mode"
+msgstr "默认模式"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:346
+msgid "The default mode for the Clash API."
+msgstr "Clash API 的默认模式。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:347
+msgid "Rule"
+msgstr "规则"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:619
+msgid "Outbounds"
+msgstr "出站"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:643
+msgid "Default outbound when no selector is chosen."
+msgstr "未选择时使用的默认出站。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:620
+msgid "List of nodes to select."
+msgstr "可供选择的节点列表。"
+
+#: htdocs/luci-static/resources/view/homeproxy/client.js:659
+msgid "Interrupt existing connections when the selected outbound has changed."
+msgstr "当选定的出站发生变化时，中断现有连接。"

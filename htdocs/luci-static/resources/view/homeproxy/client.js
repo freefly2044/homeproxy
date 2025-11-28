@@ -475,7 +475,6 @@ return view.extend({
 		so.value('selector', _('Selector'));
 		for (let i in proxy_nodes)
 			so.value(i, proxy_nodes[i]);
-		so.validate = L.bind(hp.validateUniqueValue, this, data[0], 'routing_node', 'node');
 		so.editable = true;
 
 		so = ss.option(form.ListValue, 'domain_resolver', _('Domain resolver'),

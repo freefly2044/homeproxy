@@ -782,23 +782,29 @@ if (!isEmpty(main_node)) {
 		} else {
 			const outbound = uci.get_all(uciconfig, cfg.node) || {};
 			if (outbound.type === 'wireguard') {
-				push(config.endpoints, generate_endpoint(outbound));
-				config.endpoints[length(config.endpoints)-1].bind_interface = cfg.bind_interface;
-				config.endpoints[length(config.endpoints)-1].detour = get_outbound(cfg.outbound);
-				if (cfg.domain_resolver)
-					config.endpoints[length(config.endpoints)-1].domain_resolver = {
-						server: get_resolver(cfg.domain_resolver),
-						strategy: cfg.domain_strategy
-					};
+				const generated_endpoint = generate_endpoint(outbound);
+				if (generated_endpoint) {
+					generated_endpoint.bind_interface = cfg.bind_interface;
+					generated_endpoint.detour = get_outbound(cfg.outbound);
+					if (cfg.domain_resolver)
+						generated_endpoint.domain_resolver = {
+							server: get_resolver(cfg.domain_resolver),
+							strategy: cfg.domain_strategy
+						};
+					push(config.endpoints, generated_endpoint);
+				}
 			} else {
-				push(config.outbounds, generate_outbound(outbound));
-				config.outbounds[length(config.outbounds)-1].bind_interface = cfg.bind_interface;
-				config.outbounds[length(config.outbounds)-1].detour = get_outbound(cfg.outbound);
-				if (cfg.domain_resolver)
-					config.outbounds[length(config.outbounds)-1].domain_resolver = {
-						server: get_resolver(cfg.domain_resolver),
-						strategy: cfg.domain_strategy
-					};
+				const generated_outbound = generate_outbound(outbound);
+				if (generated_outbound) {
+					generated_outbound.bind_interface = cfg.bind_interface;
+					generated_outbound.detour = get_outbound(cfg.outbound);
+					if (cfg.domain_resolver)
+						generated_outbound.domain_resolver = {
+							server: get_resolver(cfg.domain_resolver),
+							strategy: cfg.domain_strategy
+						};
+					push(config.outbounds, generated_outbound);
+				}
 			}
 			push(routing_nodes, cfg.node);
 		}
