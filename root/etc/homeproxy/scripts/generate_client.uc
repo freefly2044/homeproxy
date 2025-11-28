@@ -286,6 +286,10 @@ function generate_outbound(node) {
 		global_padding: strToBool(node.vmess_global_padding),
 		authenticated_length: strToBool(node.vmess_authenticated_length),
 		packet_encoding: node.packet_encoding,
+		/* Selector */
+		outbounds: (node.type === 'selector') ? map(node.selector_outbounds, (out) => 'cfg-' + out + '-out') : null,
+		default: (node.type === 'selector') ? 'cfg-' + node.selector_default + '-out' : null,
+		interrupt_exist_connections: strToBool(node.interrupt_exist_connections),
 
 		multiplex: (node.multiplex === '1') ? {
 			enabled: true,
