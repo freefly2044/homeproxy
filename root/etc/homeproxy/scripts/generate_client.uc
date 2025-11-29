@@ -194,7 +194,7 @@ function generate_endpoint(node) {
 
 	const endpoint = {
 		type: node.type,
-		tag: 'cfg-' + node['.name'] + '-out',
+		tag: node.label,
 		address: node.wireguard_local_address,
 		mtu: strToInt(node.wireguard_mtu),
 		private_key: node.wireguard_private_key,
@@ -227,7 +227,7 @@ function generate_outbound(node) {
 
 	const outbound = {
 		type: node.type,
-		tag: 'cfg-' + node['.name'] + '-out',
+		tag: node.label,
 		routing_mark: strToInt(self_mark),
 
 		server: node.address,
@@ -373,9 +373,9 @@ function get_outbound(cfg) {
 			if (isEmpty(node))
 				die(sprintf("%s's node is missing, please check your configuration.", cfg));
 			else if (node === 'urltest' || node === 'selector')
-				return 'cfg-' + cfg + '-out';
+				return uci.get(uciconfig, cfg, 'label');
 			else
-				return 'cfg-' + node + '-out';
+				return uci.get(uciconfig, node, 'label');
 		}
 	}
 }
@@ -699,7 +699,7 @@ if (!isEmpty(main_node)) {
 		push(config.outbounds, {
 			type: 'urltest',
 			tag: 'main-out',
-			outbounds: map(main_urltest_nodes, (k) => `cfg-${k}-out`),
+			outbounds: map(main_urltest_nodes, (k) => uci.get(uciconfig, k, 'label')),
 			interval: strToTime(main_urltest_interval),
 			tolerance: strToInt(main_urltest_tolerance),
 			idle_timeout: (strToInt(main_urltest_interval) > 1800) ? `${main_urltest_interval * 2}s` : null,
@@ -724,7 +724,7 @@ if (!isEmpty(main_node)) {
 		push(config.outbounds, {
 			type: 'urltest',
 			tag: 'main-udp-out',
-			outbounds: map(main_udp_urltest_nodes, (k) => `cfg-${k}-out`),
+			outbounds: map(main_udp_urltest_nodes, (k) => uci.get(uciconfig, k, 'label')),
 			interval: strToTime(main_udp_urltest_interval),
 			tolerance: strToInt(main_udp_urltest_tolerance),
 			idle_timeout: (strToInt(main_udp_urltest_interval) > 1800) ? `${main_udp_urltest_interval * 2}s` : null,
@@ -745,10 +745,8 @@ if (!isEmpty(main_node)) {
 		const urltest_node = uci.get_all(uciconfig, i) || {};
 		if (urltest_node.type === 'wireguard') {
 			push(config.endpoints, generate_endpoint(urltest_node));
-			config.endpoints[length(config.endpoints)-1].tag = 'cfg-' + i + '-out';
 		} else {
 			push(config.outbounds, generate_outbound(urltest_node));
-			config.outbounds[length(config.outbounds)-1].tag = 'cfg-' + i + '-out';
 		}
 	}
 } else if (!isEmpty(default_outbound)) {
@@ -762,8 +760,8 @@ if (!isEmpty(main_node)) {
 		if (cfg.node === 'urltest') {
 			push(config.outbounds, {
 				type: 'urltest',
-				tag: 'cfg-' + cfg['.name'] + '-out',
-				outbounds: map(cfg.urltest_nodes, (k) => `cfg-${k}-out`),
+				tag: cfg.label,
+				outbounds: map(cfg.urltest_nodes, (k) => uci.get(uciconfig, k, 'label')),
 				url: cfg.urltest_url,
 				interval: strToTime(cfg.urltest_interval),
 				tolerance: strToInt(cfg.urltest_tolerance),
@@ -774,9 +772,9 @@ if (!isEmpty(main_node)) {
 		} else if (cfg.node === 'selector') {
 			push(config.outbounds, {
 				type: 'selector',
-				tag: 'cfg-' + cfg['.name'] + '-out',
-				outbounds: map(cfg.selector_outbounds, (k) => `cfg-${k}-out`),
-				default: 'cfg-' + cfg.selector_default + '-out',
+				tag: cfg.label,
+				outbounds: map(cfg.selector_outbounds, (k) => uci.get(uciconfig, k, 'label')),
+				default: uci.get(uciconfig, cfg.selector_default, 'label'),
 				interrupt_exist_connections: strToBool(cfg.selector_interrupt_exist_connections)
 			});
 		} else {
